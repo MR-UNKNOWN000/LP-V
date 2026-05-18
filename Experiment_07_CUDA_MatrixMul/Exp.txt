@@ -1,0 +1,457 @@
+# CUDA Matrix Multiplication – Complete Practical Explanation
+
+---
+
+# 1. Aim of the Program
+
+To multiply two matrices using CUDA on the GPU.
+
+---
+
+# 2. What is Matrix Multiplication?
+
+If:
+
+* Matrix A is `n × n`
+* Matrix B is `n × n`
+
+Then:
+
+* Result matrix C is also `n × n`
+
+Each element of C is calculated by multiplying one row of A with one column of B.
+
+---
+
+# 3. Example
+
+### Matrix A
+
+```text id="ewr1jr"
+1 2
+3 4
+```
+
+### Matrix B
+
+```text id="vv72hr"
+5 6
+7 8
+```
+
+### Result C
+
+```text id="x5vpbx"
+19 22
+43 50
+```
+
+---
+
+# 4. Formula
+
+For element `C[i][j]`:
+
+C[i][j] = \sum_{k=0}^{n-1} A[i][k] \times B[k][j]
+
+---
+
+# 5. What is CUDA?
+
+CUDA is a GPU programming platform developed by NVIDIA.
+
+It allows thousands of GPU threads to compute matrix elements simultaneously.
+
+---
+
+# 6. Why GPU Is Suitable for Matrix Multiplication
+
+Each result element is independent.
+
+That means:
+
+* One GPU thread can compute one element.
+* Many threads can run at the same time.
+
+---
+
+# 7. Header Files
+
+```cpp id="ydzqnk"
+#include <iostream>
+#include <cuda_runtime.h>
+```
+
+---
+
+# 8. Kernel Function
+
+```cpp id="8z7lrh"
+__global__ void multiply(int* a, int* b, int* c, int n)
+```
+
+Runs on the GPU.
+
+---
+
+# 9. Compute Row and Column
+
+```cpp id="bzp6qj"
+int row = blockIdx.y * blockDim.y + threadIdx.y;
+int col = blockIdx.x * blockDim.x + threadIdx.x;
+```
+
+Each thread gets a unique `(row, col)` position.
+
+---
+
+# 10. Boundary Check
+
+```cpp id="e4a7e4"
+if (row < n && col < n)
+```
+
+Ensures valid matrix positions only.
+
+---
+
+# 11. Compute One Element
+
+```cpp id="bjlwmx"
+int sum = 0;
+
+for (int k = 0; k < n; k++)
+{
+    sum += a[row * n + k] * b[k * n + col];
+}
+```
+
+---
+
+# 12. Store Result
+
+```cpp id="ptbqgv"
+c[row * n + col] = sum;
+```
+
+---
+
+# 13. printMatrix()
+
+```cpp id="7mjlwm"
+void printMatrix(int* a, int n)
+```
+
+Prints the matrix row by row.
+
+---
+
+# 14. Main Function
+
+Program starts here.
+
+---
+
+# 15. Input Matrix Size
+
+```cpp id="vb95ko"
+cin >> n;
+```
+
+---
+
+# 16. Allocate CPU Memory
+
+```cpp id="tbgtuk"
+int* a = new int[n * n];
+int* b = new int[n * n];
+int* c = new int[n * n];
+```
+
+---
+
+# 17. Calculate Total Memory
+
+```cpp id="vbrblj"
+int size = n * n * sizeof(int);
+```
+
+---
+
+# 18. Input Matrices
+
+```cpp id="jlwmbq"
+cin >> a[i];
+cin >> b[i];
+```
+
+Matrices are entered row by row.
+
+---
+
+# 19. GPU Pointers
+
+```cpp id="7h5zzw"
+int *d_a, *d_b, *d_c;
+```
+
+---
+
+# 20. Allocate GPU Memory
+
+```cpp id="9jlwmh"
+cudaMalloc(&d_a, size);
+cudaMalloc(&d_b, size);
+cudaMalloc(&d_c, size);
+```
+
+---
+
+# 21. Copy Matrices to GPU
+
+```cpp id="0j5i7m"
+cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
+cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
+```
+
+---
+
+# 22. Thread Configuration
+
+```cpp id="92qf1n"
+dim3 threads(16, 16);
+```
+
+Each block contains:
+
+* 16 rows
+* 16 columns
+* 256 threads total
+
+---
+
+# 23. Block Configuration
+
+```cpp id="u1o7h4"
+dim3 blocks((n + 15) / 16, (n + 15) / 16);
+```
+
+Calculates the number of blocks required to cover the whole matrix.
+
+---
+
+# 24. Launch Kernel
+
+```cpp id="fjlwmq"
+multiply<<<blocks, threads>>>(d_a, d_b, d_c, n);
+```
+
+Each thread computes one element of the result matrix.
+
+---
+
+# 25. Copy Result Back
+
+```cpp id="t8ewfx"
+cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
+```
+
+---
+
+# 26. Print Result
+
+```cpp id="7jlwm0"
+printMatrix(c, n);
+```
+
+---
+
+# 27. Free GPU Memory
+
+```cpp id="iqo5o6"
+cudaFree(d_a);
+cudaFree(d_b);
+cudaFree(d_c);
+```
+
+---
+
+# 28. Free CPU Memory
+
+```cpp id="8jlwm7"
+delete[] a;
+delete[] b;
+delete[] c;
+```
+
+---
+
+# 29. Sample Input
+
+```text id="jlwmj3"
+Enter size of matrix: 2
+
+Enter first matrix:
+1 2
+3 4
+
+Enter second matrix:
+5 6
+7 8
+```
+
+---
+
+# 30. Output
+
+```text id="rjlwm0"
+Result:
+19 22
+43 50
+```
+
+---
+
+# 31. How Threads Work
+
+For a 2×2 matrix:
+
+| Thread `(row,col)` | Computes |
+| ------------------ | -------- |
+| (0,0)              | 19       |
+| (0,1)              | 22       |
+| (1,0)              | 43       |
+| (1,1)              | 50       |
+
+Each thread calculates one output element independently.
+
+---
+
+# 32. Detailed Calculation
+
+For `C[0][0]`:
+
+1\times5 + 2\times7 = 19
+
+For `C[0][1]`:
+
+1\times6 + 2\times8 = 22
+
+For `C[1][0]`:
+
+3\times5 + 4\times7 = 43
+
+For `C[1][1]`:
+
+3\times6 + 4\times8 = 50
+
+---
+
+# 33. Time Complexity
+
+Each of the `n²` elements requires `n` multiplications.
+
+O(n^3)
+
+---
+
+# 34. Space Complexity
+
+Three matrices are stored.
+
+O(n^2)
+
+---
+
+# 35. Important CUDA Terms
+
+| Term   | Meaning                     |
+| ------ | --------------------------- |
+| Kernel | Function executed on GPU    |
+| Thread | Computes one matrix element |
+| Block  | Group of threads            |
+| Grid   | Group of blocks             |
+| Host   | CPU memory                  |
+| Device | GPU memory                  |
+
+---
+
+# 36. Viva Questions and Answers
+
+### Q1. What is matrix multiplication?
+
+Multiplying rows of the first matrix with columns of the second matrix.
+
+### Q2. What is CUDA?
+
+A GPU programming platform developed by NVIDIA.
+
+### Q3. What is a kernel?
+
+A function that runs on the GPU.
+
+### Q4. What does `__global__` mean?
+
+The function runs on the GPU and is called from the CPU.
+
+### Q5. What does each thread compute?
+
+One element of the result matrix.
+
+### Q6. Why are row and column calculated?
+
+To identify the output element assigned to the thread.
+
+### Q7. What does `cudaMalloc()` do?
+
+Allocates GPU memory.
+
+### Q8. What does `cudaMemcpy()` do?
+
+Copies data between CPU and GPU.
+
+### Q9. Why use `dim3`?
+
+To configure two-dimensional thread and block layouts.
+
+### Q10. Why use `16 × 16` threads?
+
+It gives 256 threads per block, a common efficient configuration.
+
+### Q11. What is the time complexity?
+
+O(n³).
+
+### Q12. What is the space complexity?
+
+O(n²).
+
+### Q13. What is Host?
+
+CPU memory.
+
+### Q14. What is Device?
+
+GPU memory.
+
+### Q15. Why use boundary checks?
+
+To prevent threads from accessing invalid matrix positions.
+
+---
+
+# 37. One-Line Explanation for Examiner
+
+> “Each CUDA thread computes one element of the result matrix by multiplying one row of the first matrix with one column of the second matrix.”
+
+---
+
+# 38. Short Summary to Remember
+
+* Read two matrices.
+* Allocate GPU memory.
+* Copy matrices to GPU.
+* Launch kernel.
+* Each thread computes one output element.
+* Copy result back.
+* Print the final matrix.

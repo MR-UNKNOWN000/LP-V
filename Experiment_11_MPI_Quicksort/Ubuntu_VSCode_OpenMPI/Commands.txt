@@ -1,0 +1,42 @@
+========================================
+ Commands for Experiment 11: MPI Quicksort (Ubuntu + OpenMPI)
+========================================
+
+# Step 1: Update system
+sudo apt update
+
+# Step 2: Install OpenMPI
+sudo apt install openmpi-bin openmpi-common libopenmpi-dev
+
+# Step 3: Verify installation
+mpirun --version
+mpic++ --version
+
+
+nano quicksort_mpi.cpp
+(past code )
+# Step 4: Compile
+mpic++ quicksort_mpi.cpp -o quicksort
+
+
+# Step 5: Run with 4 processes
+mpirun -np 4 ./quicksort
+
+# Step 6: Run with 2 processes
+mpirun -np 2 ./quicksort
+
+# Step 7: Run with 8 processes
+mpirun -np 8 ./quicksort
+
+# If you get "permission denied" error:
+mpirun --allow-run-as-root -np 4 ./quicksort
+
+========================================
+ Expected Output:
+========================================
+Array Size: 100000
+Number of MPI Processes: 4
+
+Sequential Time: ~45 ms
+Parallel Time: ~15 ms
+Speedup: ~3x

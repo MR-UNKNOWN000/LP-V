@@ -1,0 +1,43 @@
+========================================
+ Commands for Experiment 12: Human Face Recognition
+========================================
+
+# Install dependencies:
+pip install tensorflow opencv-python numpy matplotlib scikit-learn
+
+# Prepare dataset:
+# Create folders named after each person
+# Add 20-30 images per person
+
+# Update dataset path in code:
+# DATASET_DIR = 'path/to/your/dataset'
+
+# Run:
+python face_recognition.py
+
+# For webcam testing:
+# Uncomment the webcam section at the bottom of the code
+# Run again
+
+# In Jupyter Notebook:
+jupyter notebook
+# Copy code sections into cells
+
+# In Google Colab:
+# Upload dataset to Google Drive
+# Mount drive
+# Update paths
+# Run
+
+========================================
+ Dataset Sources:
+========================================
+# 1. LFW: http://vis-www.cs.umass.edu/lfw/
+# 2. AT&T: https://www.kaggle.com/datasets/kasikrit/att-database-of-faces
+# 3. Custom: Take 20-30 photos per person
+
+========================================
+ Expected Output:
+========================================
+Training Accuracy: ~90-95%
+Test Accuracy: ~85-92%

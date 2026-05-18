@@ -1,0 +1,62 @@
+========================================
+ Commands for Experiment 06: CUDA Vector Addition
+========================================
+
+# Environment: Google Colab
+
+# Step 1: Check CUDA version
+!nvcc --version    # Verify CUDA compiler
+!nvidia-smi         # Verify GPU access
+
+# Step 2: Write the CUDA code to a file
+%%writefile vector_add.cu
+# (paste the entire code from vector_add.cu here)
+
+# Step 3: Compile
+!nvcc vector_add.cu -o vector_add
+
+# Step 4: Run
+!./vector_add
+
+========================================
+ Google Colab Setup:
+========================================
+1. Go to https://colab.research.google.com
+2. Create a new notebook
+3. Go to Runtime -> Change runtime type -> GPU
+4. Select T4 GPU or any available GPU
+5. Run the commands above in cells
+
+========================================
+ Expected Output:
+========================================
+========================================
+ CUDA Vector Addition
+========================================
+Vector Size: 1000000 elements
+
+First 10 elements of A: 280 153 885 624 156 957 398 329 768 294 
+First 10 elements of B: 585 548 574 858 314 956 732 478 776 126 
+
+--- CPU (Sequential) ---
+First 10 results: 865 701 1459 1482 470 1913 1130 807 1544 420 
+CPU Time: 4.837 ms
+
+--- GPU (CUDA) ---
+Threads per Block: 256
+Blocks per Grid: 3907
+First 10 results: 865 701 1459 1482 470 1913 1130 807 1544 420 
+GPU Time: 92.8711 ms
+
+Verification: PASSED
+
+========================================
+ Performance Comparison
+========================================
+CPU Time: 4.837 ms
+GPU Time: 92.8711 ms
+Speedup:  0.052083x
+
+========================================
+ Vector Addition Completed!
+========================================

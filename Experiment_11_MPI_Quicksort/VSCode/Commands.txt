@@ -1,0 +1,37 @@
+========================================
+ Commands for Experiment 11: MPI Quicksort (VS Code Windows)
+========================================
+
+# Prerequisites: Install MS-MPI
+# Download from: https://learn.microsoft.com/en-us/message-passing-interface/microsoft-mpi
+# Install: msmpisetup.exe and msmpisdk.msi
+
+# Verify installation:
+mpiexec --version
+
+# Compile using g++ with MPI:
+# (Assuming MinGW/MSYS2 with MPI)
+g++ -I"C:\Program Files (x86)\Microsoft SDKs\MPI\Include" quicksort_mpi.cpp -L"C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64" -lmsmpi -o quicksort
+
+# Or using MSYS2 OpenMPI:
+mpic++ quicksort_mpi.cpp -o quicksort
+
+# Run with 4 processes:
+mpiexec -np 4 quicksort.exe
+
+# Run with 2 processes:
+mpiexec -np 2 quicksort.exe
+
+# Run with 8 processes:
+mpiexec -np 8 quicksort.exe
+
+========================================
+ Expected Output:
+========================================
+Array Size: 100000
+Number of MPI Processes: 4
+
+Sequential Time: ~45 ms
+Parallel Time: ~15 ms
+Speedup: ~3x
+Verification: PASSED

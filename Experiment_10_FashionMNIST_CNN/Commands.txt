@@ -1,0 +1,23 @@
+========================================
+ Commands for Experiment 10: Fashion MNIST Classifier
+========================================
+
+# Google Colab (Recommended):
+# 1. Go to https://colab.research.google.com
+# 2. Upload fashion_mnist_classifier.ipynb
+# 3. Go to Runtime -> Run All
+# No extra setup needed - dataset downloads automatically
+
+# Jupyter Notebook (Local):
+pip install tensorflow numpy matplotlib scikit-learn seaborn
+jupyter notebook fashion_mnist_classifier.ipynb
+
+========================================
+ Expected Output:
+========================================
+Training Accuracy: ~93-95%
+Test Accuracy: ~90-92%
+
+Categories classified:
+T-shirt/top, Trouser, Pullover, Dress, Coat,
+Sandal, Shirt, Sneaker, Bag, Ankle boot

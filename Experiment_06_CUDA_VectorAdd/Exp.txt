@@ -1,0 +1,428 @@
+# CUDA Vector Addition – Complete Practical Explanation
+
+---
+
+# 1. Aim of the Program
+
+To add two vectors using CUDA on the GPU.
+
+---
+
+# 2. What is a Vector?
+
+A vector is a one-dimensional array.
+
+Example:
+
+```text id="6zyvnp"
+A = 1 2 3 4 5
+B = 10 20 30 40 50
+```
+
+Result:
+
+```text id="ewttce"
+C = 11 22 33 44 55
+```
+
+---
+
+# 3. What is CUDA?
+
+CUDA (Compute Unified Device Architecture) is a technology developed by NVIDIA that allows us to run C/C++ code on the GPU.
+
+---
+
+# 4. Why Use GPU?
+
+* CPU has a few powerful cores.
+* GPU has thousands of smaller cores.
+* Many elements can be processed simultaneously.
+
+---
+
+# 5. Real-Life Example
+
+Suppose 1,000,000 additions are required:
+
+* CPU performs them one after another.
+* GPU performs many at the same time.
+
+---
+
+# 6. Header Files
+
+```cpp id="q1yg0e"
+#include <iostream>
+#include <cuda_runtime.h>
+```
+
+### Meaning
+
+* `iostream` → Input and output
+* `cuda_runtime.h` → CUDA functions like `cudaMalloc`, `cudaMemcpy`
+
+---
+
+# 7. Kernel Function
+
+```cpp id="q43tmc"
+__global__ void add(int* a, int* b, int* c, int n)
+```
+
+### Meaning
+
+* `__global__` means this function runs on the GPU.
+* It can be launched from the CPU.
+
+---
+
+# 8. Calculate Thread Index
+
+```cpp id="w36t8x"
+int i = blockIdx.x * blockDim.x + threadIdx.x;
+```
+
+Each GPU thread calculates a unique index.
+
+---
+
+# 9. Boundary Check
+
+```cpp id="imlsyz"
+if (i < n)
+```
+
+Ensures threads outside the valid range do nothing.
+
+---
+
+# 10. Add Elements
+
+```cpp id="9umfwp"
+c[i] = a[i] + b[i];
+```
+
+Each thread adds one element.
+
+---
+
+# 11. Main Function
+
+```cpp id="2c0tly"
+int main()
+```
+
+Program execution starts here.
+
+---
+
+# 12. Input Number of Elements
+
+```cpp id="d0dxdj"
+cin >> n;
+```
+
+---
+
+# 13. Allocate CPU Memory
+
+```cpp id="5yyf7y"
+int* a = new int[n];
+int* b = new int[n];
+int* c = new int[n];
+```
+
+* `a` → first vector
+* `b` → second vector
+* `c` → result vector
+
+---
+
+# 14. Input Vectors
+
+```cpp id="a1j89q"
+cin >> a[i];
+cin >> b[i];
+```
+
+---
+
+# 15. GPU Pointers
+
+```cpp id="wfyhnf"
+int *d_a, *d_b, *d_c;
+```
+
+Pointers to memory on the GPU.
+
+---
+
+# 16. Calculate Memory Size
+
+```cpp id="9stzb6"
+int size = n * sizeof(int);
+```
+
+Total bytes needed.
+
+---
+
+# 17. Allocate GPU Memory
+
+```cpp id="d0yh3c"
+cudaMalloc(&d_a, size);
+cudaMalloc(&d_b, size);
+cudaMalloc(&d_c, size);
+```
+
+Reserves memory on the GPU.
+
+---
+
+# 18. Copy Data to GPU
+
+```cpp id="ej1or4"
+cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
+cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
+```
+
+Transfers vectors from CPU to GPU.
+
+---
+
+# 19. Number of Threads
+
+```cpp id="6skqob"
+int threads = 256;
+```
+
+Each block contains 256 threads.
+
+---
+
+# 20. Number of Blocks
+
+```cpp id="g2d0ri"
+int blocks = (n + threads - 1) / threads;
+```
+
+Computes the minimum number of blocks required.
+
+---
+
+# 21. Launch Kernel
+
+```cpp id="5p6ckr"
+add<<<blocks, threads>>>(d_a, d_b, d_c, n);
+```
+
+Runs the GPU kernel.
+
+---
+
+# 22. Copy Result Back to CPU
+
+```cpp id="dfwcrw"
+cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
+```
+
+Transfers result from GPU to CPU.
+
+---
+
+# 23. Print Result
+
+```cpp id="l7s9h4"
+cout << c[i];
+```
+
+Displays the final vector.
+
+---
+
+# 24. Free GPU Memory
+
+```cpp id="fdv8jb"
+cudaFree(d_a);
+cudaFree(d_b);
+cudaFree(d_c);
+```
+
+---
+
+# 25. Free CPU Memory
+
+```cpp id="8svffm"
+delete[] a;
+delete[] b;
+delete[] c;
+```
+
+---
+
+# 26. Sample Input
+
+```text id="gl8vgj"
+Enter number of elements: 5
+Enter first vector: 1 2 3 4 5
+Enter second vector: 10 20 30 40 50
+```
+
+---
+
+# 27. Output
+
+```text id="kgjlwm"
+Result: 11 22 33 44 55
+```
+
+---
+
+# 28. How CUDA Works Internally
+
+Each thread handles one element.
+
+| Thread Index | Operation   |
+| -----------: | ----------- |
+|            0 | 1 + 10 = 11 |
+|            1 | 2 + 20 = 22 |
+|            2 | 3 + 30 = 33 |
+|            3 | 4 + 40 = 44 |
+|            4 | 5 + 50 = 55 |
+
+---
+
+# 29. Dry Run
+
+For:
+
+```text id="bx1khj"
+A = 1 2 3
+B = 4 5 6
+```
+
+Computation:
+
+C = [1+4,\ 2+5,\ 3+6] = [5,7,9]
+
+---
+
+# 30. Time Complexity
+
+Each element is processed once.
+
+O(n)
+
+---
+
+# 31. Space Complexity
+
+Three arrays of size `n`.
+
+O(n)
+
+---
+
+# 32. CPU vs GPU
+
+| CPU                      | GPU                            |
+| ------------------------ | ------------------------------ |
+| Few cores                | Thousands of cores             |
+| Sequential processing    | Massive parallel processing    |
+| Better for general tasks | Better for data-parallel tasks |
+
+---
+
+# 33. Important CUDA Terms
+
+| Term   | Meaning                      |
+| ------ | ---------------------------- |
+| Kernel | Function executed on the GPU |
+| Thread | Smallest execution unit      |
+| Block  | Group of threads             |
+| Grid   | Group of blocks              |
+| Host   | CPU memory                   |
+| Device | GPU memory                   |
+
+---
+
+# 34. Viva Questions and Answers
+
+### Q1. What is CUDA?
+
+A GPU programming platform developed by NVIDIA.
+
+### Q2. What is a kernel?
+
+A function that runs on the GPU.
+
+### Q3. What does `__global__` mean?
+
+The function runs on the GPU and is called from the CPU.
+
+### Q4. What is a thread?
+
+A lightweight execution unit.
+
+### Q5. What is a block?
+
+A group of threads.
+
+### Q6. What is a grid?
+
+A group of blocks.
+
+### Q7. What does `cudaMalloc()` do?
+
+Allocates memory on the GPU.
+
+### Q8. What does `cudaMemcpy()` do?
+
+Copies data between CPU and GPU.
+
+### Q9. What does `cudaFree()` do?
+
+Releases GPU memory.
+
+### Q10. Why calculate `i`?
+
+To determine which element the current thread processes.
+
+### Q11. Why use `if (i < n)`?
+
+To prevent out-of-bounds access.
+
+### Q12. What is Host?
+
+CPU memory.
+
+### Q13. What is Device?
+
+GPU memory.
+
+### Q14. What is the time complexity?
+
+O(n).
+
+### Q15. What is the space complexity?
+
+O(n).
+
+---
+
+# 35. One-Line Explanation for Examiner
+
+> “Each CUDA thread adds one element of the two vectors, and all threads run in parallel on the GPU.”
+
+---
+
+# 36. Short Summary to Remember
+
+* Read two vectors.
+* Allocate GPU memory.
+* Copy data to GPU.
+* Launch kernel.
+* Each thread adds one element.
+* Copy result back.
+* Print result.

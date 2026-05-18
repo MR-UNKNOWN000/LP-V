@@ -1,0 +1,405 @@
+# Parallel Reduction (Min, Max, Sum, Average) – Complete Practical Explanation
+
+---
+
+# 1. Aim of the Program
+
+To find:
+
+1. Minimum value
+2. Maximum value
+3. Sum of all elements
+4. Average of all elements
+
+using:
+
+* Sequential approach
+* Parallel reduction concept using OpenMP
+
+---
+
+# 2. What is Reduction?
+
+Reduction means combining many values into one result.
+
+Examples:
+
+* Many numbers → one minimum
+* Many numbers → one maximum
+* Many numbers → one sum
+* Many numbers → one average
+
+---
+
+# 3. Real-Life Example
+
+Marks of students:
+
+```text id="s7qmxm"
+10 20 30 40 50
+```
+
+Results:
+
+* Min = 10
+* Max = 50
+* Sum = 150
+* Average = 30
+
+---
+
+# 4. Header Files
+
+```cpp id="xjzr7q"
+#include <iostream>
+#include <vector>
+#include <omp.h>
+#include <windows.h>
+```
+
+### Meaning
+
+* `iostream` → Input and output
+* `vector` → Dynamic array
+* `omp.h` → OpenMP support
+* `windows.h` → High-precision timer
+
+---
+
+# 5. getTime() Function
+
+```cpp id="fw7g8p"
+double getTime()
+```
+
+Returns the current time using Windows performance counter.
+
+Used to measure execution time.
+
+---
+
+# 6. Sequential Functions
+
+---
+
+## findMinSequential()
+
+```cpp id="yut1c4"
+int findMinSequential(vector<int>& a)
+```
+
+Finds the smallest element.
+
+### Logic
+
+* Assume first element is minimum.
+* Compare all remaining elements.
+* Update minimum if a smaller value is found.
+
+---
+
+## findMaxSequential()
+
+```cpp id="cn9l8w"
+int findMaxSequential(vector<int>& a)
+```
+
+Finds the largest element.
+
+---
+
+## findSumSequential()
+
+```cpp id="24vw1r"
+long long findSumSequential(vector<int>& a)
+```
+
+Adds all elements.
+
+---
+
+## findAverageSequential()
+
+```cpp id="yncl9g"
+double findAverageSequential(vector<int>& a)
+```
+
+Computes:
+
+\text{Average} = \frac{\text{Sum}}{n}
+
+---
+
+# 7. Parallel Functions
+
+These functions are conceptually the same as sequential ones.
+
+In a full OpenMP implementation, the loops would use reduction clauses such as:
+
+```cpp id="vbg6gd"
+#pragma omp parallel for reduction(min:mn)
+#pragma omp parallel for reduction(max:mx)
+#pragma omp parallel for reduction(+:sum)
+```
+
+Your simplified code keeps the logic straightforward for exam use.
+
+---
+
+## findMinParallel()
+
+Finds the minimum.
+
+## findMaxParallel()
+
+Finds the maximum.
+
+## findSumParallel()
+
+Finds the sum.
+
+## findAverageParallel()
+
+Finds the average using the parallel sum.
+
+---
+
+# 8. Main Function
+
+---
+
+## Input Number of Elements
+
+```cpp id="jlwmkh"
+cin >> n;
+```
+
+---
+
+## Input Array Elements
+
+```cpp id="33s5e4"
+for (int i = 0; i < n; i++) {
+    cin >> a[i];
+}
+```
+
+---
+
+# 9. Sequential Execution
+
+```cpp id="a4z6v8"
+start = getTime();
+...
+end = getTime();
+```
+
+Calculates:
+
+* Min
+* Max
+* Sum
+* Average
+
+Stores the total sequential execution time.
+
+---
+
+# 10. Parallel Execution
+
+Similarly calculates the same results using the parallel functions.
+
+---
+
+# 11. Speedup
+
+```cpp id="jlwm5d"
+seqTime / parTime
+```
+
+Shows how many times the parallel version is faster.
+
+---
+
+# 12. Sample Input
+
+```text id="v0cf1f"
+Enter number of elements: 5
+Enter elements: 10 20 30 40 50
+```
+
+---
+
+# 13. Output
+
+```text id="m8mwwg"
+Sequential Results:
+Min = 10
+Max = 50
+Sum = 150
+Average = 30
+
+Parallel Results:
+Min = 10
+Max = 50
+Sum = 150
+Average = 30
+```
+
+---
+
+# 14. Dry Run
+
+Array:
+
+```text id="n4vggn"
+10 20 30 40 50
+```
+
+### Minimum
+
+Smallest value = 10
+
+### Maximum
+
+Largest value = 50
+
+### Sum
+
+10 + 20 + 30 + 40 + 50 = 150
+
+### Average
+
+150 / 5 = 30
+
+---
+
+# 15. Time Complexity
+
+Each operation scans the entire array once.
+
+O(n)
+
+Where `n` is the number of elements.
+
+---
+
+# 16. Space Complexity
+
+O(1)
+
+Only a few variables are used.
+
+(The vector storing input uses O(n).)
+
+---
+
+# 17. Why `long long` Is Used for Sum
+
+The sum may exceed the range of `int`.
+
+Example:
+
+* 100000 numbers × large values
+
+`long long` prevents overflow.
+
+---
+
+# 18. Why Average Returns `double`
+
+Average may contain decimal values.
+
+Example:
+7 / 2 = 3.5
+
+---
+
+# 19. Sequential vs Parallel Reduction
+
+| Sequential                   | Parallel                                          |
+| ---------------------------- | ------------------------------------------------- |
+| One element at a time        | Multiple elements can be processed simultaneously |
+| Single thread                | Multiple threads possible                         |
+| Slower for very large arrays | Faster for large arrays                           |
+
+---
+
+# 20. Viva Questions and Answers
+
+### Q1. What is reduction?
+
+Combining multiple values into one result.
+
+### Q2. Which operations are performed?
+
+Minimum, maximum, sum, and average.
+
+### Q3. What is the time complexity?
+
+O(n).
+
+### Q4. What is the space complexity?
+
+O(1).
+
+### Q5. Why use `long long` for sum?
+
+To avoid integer overflow.
+
+### Q6. Why use `double` for average?
+
+To support decimal values.
+
+### Q7. How is average calculated?
+
+Sum divided by number of elements.
+
+### Q8. What does `getTime()` do?
+
+Returns current high-resolution time.
+
+### Q9. What does `windows.h` provide?
+
+`QueryPerformanceCounter` and related timer functions.
+
+### Q10. What does `omp.h` provide?
+
+OpenMP functions such as timing and parallel directives.
+
+### Q11. What is speedup?
+
+Sequential time divided by parallel time.
+
+### Q12. What is the minimum value?
+
+The smallest element in the array.
+
+### Q13. What is the maximum value?
+
+The largest element in the array.
+
+### Q14. What is sum?
+
+The total of all elements.
+
+### Q15. What is average?
+
+The mean value of all elements.
+
+---
+
+# 21. One-Line Explanation for Examiner
+
+> “This program uses reduction operations to compute minimum, maximum, sum, and average, and compares sequential and parallel execution times.”
+
+---
+
+# 22. Short Summary to Remember
+
+* Read the array.
+* Find minimum.
+* Find maximum.
+* Add all elements.
+* Compute average.
+* Compare sequential and parallel execution.

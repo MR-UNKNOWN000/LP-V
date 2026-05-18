@@ -1,0 +1,66 @@
+========================================
+ Commands for Experiment 03: Parallel Bubble Sort using OpenMP
+========================================
+
+========================================
+ Dev C++ Setup (Step-by-Step):
+========================================
+
+Step 1: Create a NEW Separate Project (IMPORTANT!)
+   - Open Dev C++
+   - Go to FILE -> New -> Project
+   - Select "Console Application"
+   - Select "C++ Project"
+   - Give a project name (e.g., BubbleSort_OpenMP)
+   - Click OK
+   - Save the project in a NEW folder
+
+   WARNING: Each experiment MUST have its OWN project!
+   Do NOT add multiple experiment .cpp files to the same project.
+   If you get "multiple definition of main" error, it means
+   you have two .cpp files with main() in one project.
+
+Step 2: Add Source Code File
+   - Delete the default main.cpp content (or remove it)
+   - Go to PROJECT -> Add to Project
+   - Browse and select "bubblesort_openmp.cpp"
+   - (OR simply copy-paste the code into the editor)
+
+Step 3: Enable OpenMP (IMPORTANT - Add in BOTH fields!)
+   - Go to PROJECT -> Project Options (top menu bar)
+   - Click on "Parameters" tab
+   - In the "C++ Compiler" text box, paste:
+     -fopenmp
+   - In the "Linker" text box, ALSO paste:
+     -fopenmp
+   - Click OK
+
+   NOTE: If you only add -fopenmp in Compiler but NOT in
+   Linker, you will get "undefined reference to omp_get_wtime"
+   and "undefined reference to GOMP_parallel" errors!
+
+Step 4: Compile and Run
+   - Press F11 (Compile & Run)
+   - OR go to EXECUTE -> Compile & Run
+
+========================================
+ Alternative: Command Line
+========================================
+
+# Compile:
+g++ -fopenmp bubblesort_openmp.cpp -o bubblesort_openmp
+
+# Run (Windows):
+bubblesort_openmp.exe
+
+========================================
+ Sample Input:
+========================================
+Enter number of elements: 10000
+
+========================================
+ Expected Output:
+========================================
+Sequential Bubble Sort Time: ~250 ms
+Parallel Bubble Sort Time: ~100 ms
+Speedup: ~2.5x

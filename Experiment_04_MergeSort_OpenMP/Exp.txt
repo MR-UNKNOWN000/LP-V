@@ -1,0 +1,480 @@
+# Parallel Merge Sort using OpenMP – Complete Practical Explanation
+
+---
+
+# 1. Aim of the Program
+
+To sort an array using:
+
+1. Sequential Merge Sort
+2. Parallel Merge Sort using OpenMP concept
+
+---
+
+# 2. What is Merge Sort?
+
+Merge Sort follows the **Divide and Conquer** approach:
+
+1. Divide the array into two halves.
+2. Sort both halves recursively.
+3. Merge the two sorted halves.
+
+---
+
+# 3. Example
+
+Array:
+
+```text
+5 3 1 4 2
+```
+
+Sorted Array:
+
+```text
+1 2 3 4 5
+```
+
+---
+
+# 4. Real-Life Example
+
+Imagine sorting playing cards:
+
+* Split the deck into two parts.
+* Sort each part separately.
+* Combine both sorted parts.
+
+---
+
+# 5. Header Files
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <omp.h>
+```
+
+### Meaning
+
+* `iostream` → Input and output
+* `vector` → Dynamic arrays
+* `omp.h` → OpenMP timing support
+
+---
+
+# 6. merge() Function
+
+```cpp
+void merge(vector<int>& a, int left, int mid, int right)
+```
+
+Combines two sorted subarrays into one sorted array.
+
+---
+
+## Left and Right Parts
+
+Suppose:
+
+```text
+Left  = 1 4 7
+Right = 2 5 6
+```
+
+After merge:
+
+```text
+1 2 4 5 6 7
+```
+
+---
+
+## Step 1: Find Sizes
+
+```cpp
+int n1 = mid - left + 1;
+int n2 = right - mid;
+```
+
+---
+
+## Step 2: Create Temporary Arrays
+
+```cpp
+vector<int> L(n1), R(n2);
+```
+
+---
+
+## Step 3: Copy Elements
+
+```cpp
+L[i] = a[left + i];
+R[i] = a[mid + 1 + i];
+```
+
+---
+
+## Step 4: Compare and Merge
+
+```cpp
+while (i < n1 && j < n2)
+```
+
+Choose the smaller element each time.
+
+---
+
+## Step 5: Copy Remaining Elements
+
+```cpp
+while (i < n1)
+while (j < n2)
+```
+
+---
+
+# 7. Sequential Merge Sort
+
+```cpp
+void mergeSortSequential(vector<int>& a, int left, int right)
+```
+
+---
+
+## Base Condition
+
+```cpp
+if (left < right)
+```
+
+Continue only if more than one element exists.
+
+---
+
+## Find Middle
+
+```cpp
+int mid = (left + right) / 2;
+```
+
+---
+
+## Recursively Sort Left Half
+
+```cpp
+mergeSortSequential(a, left, mid);
+```
+
+---
+
+## Recursively Sort Right Half
+
+```cpp
+mergeSortSequential(a, mid + 1, right);
+```
+
+---
+
+## Merge Both Halves
+
+```cpp
+merge(a, left, mid, right);
+```
+
+---
+
+# 8. Parallel Merge Sort
+
+```cpp
+void mergeSortParallel(vector<int>& a, int left, int right, int depth = 0)
+```
+
+Works similarly to sequential merge sort, but is structured so that left and right halves can be processed in parallel.
+
+---
+
+## Why `depth` Is Used
+
+If recursion creates too many threads, performance decreases.
+
+So parallelism is allowed only for a few levels.
+
+```cpp
+if (depth < 3)
+```
+
+---
+
+## Parallel Concept
+
+At shallow levels:
+
+* Left half can be sorted independently.
+* Right half can be sorted independently.
+
+These two tasks can run simultaneously.
+
+---
+
+## Deeper Levels
+
+```cpp
+else
+```
+
+Use sequential merge sort to avoid excessive thread creation.
+
+---
+
+# 9. printArray()
+
+```cpp
+void printArray(const vector<int>& a)
+```
+
+Prints all array elements.
+
+---
+
+# 10. Main Function
+
+---
+
+## Input Number of Elements
+
+```cpp
+cin >> n;
+```
+
+---
+
+## Input Array Elements
+
+```cpp
+for (int i = 0; i < n; i++) {
+    cin >> a[i];
+}
+```
+
+---
+
+## Copy Array
+
+```cpp
+vector<int> b = a;
+```
+
+* `a` → Sequential sorting
+* `b` → Parallel sorting
+
+---
+
+# 11. Measure Sequential Time
+
+```cpp
+start = omp_get_wtime();
+mergeSortSequential(a, 0, n - 1);
+end = omp_get_wtime();
+```
+
+---
+
+# 12. Measure Parallel Time
+
+```cpp
+start = omp_get_wtime();
+mergeSortParallel(b, 0, n - 1);
+end = omp_get_wtime();
+```
+
+---
+
+# 13. Speedup
+
+```cpp
+seqTime / parTime
+```
+
+Shows how many times parallel sorting is faster.
+
+---
+
+# 14. Sample Input
+
+```text
+Enter number of elements: 5
+Enter elements: 5 3 1 4 2
+```
+
+---
+
+# 15. Output
+
+```text
+Sequential Sorted Array: 1 2 3 4 5
+Parallel Sorted Array: 1 2 3 4 5
+```
+
+---
+
+# 16. Dry Run
+
+Initial array:
+
+```text
+5 3 1 4 2
+```
+
+Split:
+
+```text
+[5 3] [1 4 2]
+```
+
+Further split:
+
+```text
+[5] [3] [1] [4] [2]
+```
+
+Merge:
+
+```text
+[3 5] [1] [2 4]
+```
+
+Merge:
+
+```text
+[1 2 4]
+```
+
+Final merge:
+
+```text
+1 2 3 4 5
+```
+
+---
+
+# 17. Time Complexity
+
+Sequential Merge Sort:
+
+O(n \log n)
+
+Parallel Merge Sort (ideal case):
+
+O(\log n)
+
+Practical performance depends on hardware and thread overhead.
+
+---
+
+# 18. Space Complexity
+
+Temporary arrays are created during merging.
+
+O(n)
+
+---
+
+# 19. Why Merge Sort Is Better Than Bubble Sort
+
+| Bubble Sort         | Merge Sort        |
+| ------------------- | ----------------- |
+| O(n²)               | O(n log n)        |
+| Slow for large data | Much faster       |
+| No extra memory     | Uses extra memory |
+
+---
+
+# 20. Sequential vs Parallel Merge Sort
+
+| Sequential                     | Parallel                                 |
+| ------------------------------ | ---------------------------------------- |
+| Sorts one half after the other | Both halves can be sorted simultaneously |
+| Single thread                  | Multiple threads possible                |
+| Slower on large data           | Faster on large data                     |
+
+---
+
+# 21. Viva Questions and Answers
+
+### Q1. What is Merge Sort?
+
+A divide-and-conquer sorting algorithm.
+
+### Q2. What is its time complexity?
+
+O(n log n).
+
+### Q3. What is its space complexity?
+
+O(n).
+
+### Q4. What is divide and conquer?
+
+Break the problem into smaller subproblems, solve them, and combine the results.
+
+### Q5. What does the merge function do?
+
+Combines two sorted arrays into one sorted array.
+
+### Q6. Why is `mid` calculated?
+
+To split the array into two halves.
+
+### Q7. What is the base condition?
+
+`left < right`.
+
+### Q8. Is Merge Sort stable?
+
+Yes.
+
+### Q9. Why use temporary arrays?
+
+To store left and right halves during merging.
+
+### Q10. What does `depth` control?
+
+How many recursive levels use parallel processing.
+
+### Q11. What does `omp_get_wtime()` do?
+
+Measures execution time.
+
+### Q12. Why copy the array?
+
+To use the same input for sequential and parallel sorting.
+
+### Q13. Which is faster: Bubble Sort or Merge Sort?
+
+Merge Sort.
+
+### Q14. Is Merge Sort recursive?
+
+Yes.
+
+### Q15. Can Merge Sort be parallelized?
+
+Yes, because both halves are independent.
+
+---
+
+# 22. One-Line Explanation for Examiner
+
+> “Merge Sort divides the array into smaller parts, sorts them recursively, and merges them back; the two halves can be processed in parallel.”
+
+---
+
+# 23. Short Summary to Remember
+
+* Divide the array into two halves.
+* Sort each half recursively.
+* Merge the sorted halves.
+* Repeat until the entire array is sorted.
+* Parallel version processes left and right halves simultaneously.

@@ -1,0 +1,441 @@
+# Parallel Bubble Sort using OpenMP – Complete Practical Explanation
+
+---
+
+# 1. Aim of the Program
+
+To sort an array using:
+
+1. Sequential Bubble Sort
+2. Parallel Bubble Sort (Odd-Even Transposition Sort)
+
+---
+
+# 2. What is Bubble Sort?
+
+Bubble Sort repeatedly compares two adjacent elements and swaps them if they are in the wrong order.
+
+The largest element "bubbles up" to the end after each pass.
+
+---
+
+# 3. Example
+
+Array:
+
+```text
+5 3 1 4 2
+```
+
+After sorting:
+
+```text
+1 2 3 4 5
+```
+
+---
+
+# 4. Real-Life Example
+
+Imagine arranging books by height:
+
+* Compare two neighboring books.
+* Swap if the left one is taller.
+* Repeat until all books are in order.
+
+---
+
+# 5. Header Files
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <omp.h>
+```
+
+### Meaning
+
+* `iostream` → input/output
+* `vector` → dynamic array
+* `omp.h` → OpenMP timing support
+
+---
+
+# 6. Sequential Bubble Sort Function
+
+```cpp
+void bubbleSortSequential(vector<int>& a)
+```
+
+Sorts the array using the normal Bubble Sort algorithm.
+
+---
+
+## Outer Loop
+
+```cpp
+for (int i = 0; i < n - 1; i++)
+```
+
+Runs `n-1` passes.
+
+---
+
+## Inner Loop
+
+```cpp
+for (int j = 0; j < n - i - 1; j++)
+```
+
+Compares adjacent elements.
+
+---
+
+## Compare and Swap
+
+```cpp
+if (a[j] > a[j + 1])
+```
+
+If the left element is larger, swap them.
+
+---
+
+## Swap
+
+```cpp
+int temp = a[j];
+a[j] = a[j + 1];
+a[j + 1] = temp;
+```
+
+---
+
+# 7. Parallel Bubble Sort Function
+
+```cpp
+void bubbleSortParallel(vector<int>& a)
+```
+
+Uses Odd-Even Transposition Sort, which is suitable for parallel processing.
+
+---
+
+# 8. What is Odd-Even Transposition Sort?
+
+Instead of comparing all adjacent pairs in one pass:
+
+### Even Phase
+
+Compare:
+
+```text
+(0,1), (2,3), (4,5), ...
+```
+
+### Odd Phase
+
+Compare:
+
+```text
+(1,2), (3,4), (5,6), ...
+```
+
+Repeat for `n` phases.
+
+---
+
+# 9. Outer Phase Loop
+
+```cpp
+for (int phase = 0; phase < n; phase++)
+```
+
+Runs `n` phases.
+
+---
+
+# 10. Even Phase
+
+```cpp
+if (phase % 2 == 0)
+```
+
+Process pairs:
+
+```text
+(0,1), (2,3), (4,5)
+```
+
+---
+
+# 11. Odd Phase
+
+```cpp
+else
+```
+
+Process pairs:
+
+```text
+(1,2), (3,4), (5,6)
+```
+
+---
+
+# 12. Why This Is Parallel-Friendly
+
+Pairs do not overlap.
+
+Example:
+
+* (0,1)
+* (2,3)
+* (4,5)
+
+Each pair can be processed independently.
+
+> In a full OpenMP implementation, these loops would use:
+
+```cpp
+#pragma omp parallel for
+```
+
+---
+
+# 13. printArray()
+
+```cpp
+void printArray(const vector<int>& a)
+```
+
+Prints all elements of the array.
+
+---
+
+# 14. Main Function
+
+---
+
+## Input Number of Elements
+
+```cpp
+cin >> n;
+```
+
+---
+
+## Input Array Elements
+
+```cpp
+for (int i = 0; i < n; i++) {
+    cin >> a[i];
+}
+```
+
+---
+
+## Copy Original Array
+
+```cpp
+vector<int> b = a;
+```
+
+* `a` for sequential sort
+* `b` for parallel sort
+
+---
+
+# 15. Measure Sequential Time
+
+```cpp
+start = omp_get_wtime();
+bubbleSortSequential(a);
+end = omp_get_wtime();
+```
+
+---
+
+# 16. Measure Parallel Time
+
+```cpp
+start = omp_get_wtime();
+bubbleSortParallel(b);
+end = omp_get_wtime();
+```
+
+---
+
+# 17. Speedup Calculation
+
+```cpp
+seqTime / parTime
+```
+
+Shows how many times the parallel version is faster.
+
+---
+
+# 18. Sample Input
+
+```text
+Enter number of elements: 5
+Enter elements: 5 3 1 4 2
+```
+
+---
+
+# 19. Output
+
+```text
+Sequential Sorted Array: 1 2 3 4 5
+Parallel Sorted Array: 1 2 3 4 5
+```
+
+---
+
+# 20. Dry Run of Bubble Sort
+
+Initial:
+
+```text
+5 3 1 4 2
+```
+
+Pass 1:
+
+```text
+3 1 4 2 5
+```
+
+Pass 2:
+
+```text
+1 3 2 4 5
+```
+
+Pass 3:
+
+```text
+1 2 3 4 5
+```
+
+---
+
+# 21. Time Complexity
+
+Sequential Bubble Sort:
+
+O(n^2)
+
+Parallel Odd-Even Sort:
+
+O(n^2)
+
+Although still O(n²), parallel execution reduces actual running time.
+
+---
+
+# 22. Space Complexity
+
+O(1)
+
+Only one temporary variable is used for swapping.
+
+(Overall program uses O(n) because arrays are stored in vectors.)
+
+---
+
+# 23. Sequential vs Parallel Bubble Sort
+
+| Sequential                  | Parallel                                |
+| --------------------------- | --------------------------------------- |
+| Compares one pair at a time | Compares multiple non-overlapping pairs |
+| Normal Bubble Sort          | Odd-Even Transposition Sort             |
+| Single thread               | Multiple threads possible               |
+
+---
+
+# 24. Why Bubble Sort Is Called “Bubble”
+
+The largest element moves to the end like a bubble rising to the top.
+
+---
+
+# 25. Viva Questions and Answers
+
+### Q1. What is Bubble Sort?
+
+A sorting algorithm that repeatedly swaps adjacent elements.
+
+### Q2. What is the time complexity?
+
+O(n²).
+
+### Q3. What is the space complexity?
+
+O(1).
+
+### Q4. Is Bubble Sort stable?
+
+Yes.
+
+### Q5. What is Odd-Even Transposition Sort?
+
+A parallel version of Bubble Sort.
+
+### Q6. Why are even and odd phases used?
+
+To compare independent pairs.
+
+### Q7. What does `phase % 2` check?
+
+Whether the phase is even or odd.
+
+### Q8. Why copy the array?
+
+To sort the same input using both methods.
+
+### Q9. What does `omp_get_wtime()` do?
+
+Measures execution time.
+
+### Q10. What is speedup?
+
+Sequential time divided by parallel time.
+
+### Q11. Which pairs are compared in even phase?
+
+(0,1), (2,3), (4,5).
+
+### Q12. Which pairs are compared in odd phase?
+
+(1,2), (3,4), (5,6).
+
+### Q13. Is Bubble Sort efficient for large data?
+
+No.
+
+### Q14. What is a sorting algorithm?
+
+An algorithm that arranges data in ascending or descending order.
+
+### Q15. Why is Bubble Sort easy to understand?
+
+It uses simple adjacent comparisons and swaps.
+
+---
+
+# 26. One-Line Explanation for Examiner
+
+> “This program sorts an array using normal Bubble Sort and a parallel-friendly Odd-Even Transposition Sort, then compares their execution times.”
+
+---
+
+# 27. Short Summary to Remember
+
+* Compare adjacent elements.
+* Swap if left element is larger.
+* Repeat until sorted.
+* Parallel version uses even and odd phases.
+* Both produce the same sorted array.

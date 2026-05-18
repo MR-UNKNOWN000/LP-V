@@ -1,0 +1,19 @@
+========================================
+ Commands for Experiment 09: IMDB Binary Classification
+========================================
+
+# Install dependencies:
+pip install tensorflow numpy pandas matplotlib scikit-learn
+
+# Run in Jupyter Notebook:
+jupyter notebook IMDB.ipynb
+
+# Run in Google Colab:
+# 1. Upload IMDB.ipynb and IMDB_Dataset.csv
+# 2. Run all cells (no GPU needed, CPU is fast enough)
+
+========================================
+ Expected Output:
+========================================
+Test Accuracy: ~88%
+Training time: ~2-3 minutes on CPU

@@ -1,0 +1,36 @@
+========================================
+ Commands for Experiment 07: CUDA Matrix Multiplication
+========================================
+
+# Environment: Google Colab
+
+# Step 1: Check CUDA version
+!nvcc --version    # Verify CUDA compiler
+!nvidia-smi         # Verify GPU access
+
+
+# Step 2: Write the CUDA code to a file
+%%writefile matrix_mul.cu
+# (paste the entire code from matrix_mul.cu here)
+
+# Step 3: Compile
+!nvcc matrix_mul.cu -o matrix_mul
+
+# Step 4: Run
+!./matrix_mul
+
+========================================
+ Google Colab Setup:
+========================================
+1. Go to https://colab.research.google.com
+2. Create a new notebook
+3. Go to Runtime -> Change runtime type -> GPU
+4. Select T4 GPU or any available GPU
+5. Run the commands above in cells
+
+========================================
+ Expected Output:
+========================================
+CPU Time: ~890 ms
+GPU Time: ~2.3 ms
+Speedup: ~387x

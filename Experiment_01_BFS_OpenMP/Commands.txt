@@ -1,0 +1,75 @@
+========================================
+ Commands for Experiment 01: Parallel BFS using OpenMP
+========================================
+
+========================================
+ Dev C++ Setup (Step-by-Step):
+========================================
+
+Step 1: Create a New Project
+   - Open Dev C++
+   - Go to FILE -> New -> Project
+   - Select "Console Application"
+   - Select "C++ Project"
+   - Give a project name (e.g., BFS_OpenMP)
+   - Click OK
+   - Save the project in your desired folder
+
+Step 2: Add Source Code File
+   - Delete the default main.cpp content (or remove it)
+   - Go to PROJECT -> Add to Project
+   - Browse and select "bfs_openmp.cpp"
+   - (OR simply copy-paste the code into the editor)
+
+Step 3: Enable OpenMP (IMPORTANT - Add in BOTH fields!)
+   - Go to PROJECT -> Project Options (top menu bar)
+   - Click on "Parameters" tab
+   - In the "C++ Compiler" text box, paste:
+     -fopenmp
+   - In the "Linker" text box, ALSO paste:
+     -fopenmp
+   - Click OK
+
+   NOTE: If you only add -fopenmp in Compiler but NOT in
+   Linker, you will get "undefined reference to omp_get_wtime"
+   and "undefined reference to GOMP_parallel" errors!
+
+Step 4: Compile and Run
+   - Press F11 (Compile & Run)
+   - OR go to EXECUTE -> Compile & Run
+
+========================================
+ Alternative: Command Line (if using g++ directly)
+========================================
+
+# Compile:
+g++ -fopenmp bfs_openmp.cpp -o bfs_openmp
+
+# Run (Windows):
+bfs_openmp.exe
+
+# Run (Linux/Mac):
+./bfs_openmp
+
+========================================
+ Sample Input:
+========================================
+Enter number of vertices: 7
+Enter number of edges: 6
+Enter edges (u v):
+0 1
+0 2
+1 3
+1 4
+2 5
+2 6
+Enter starting node for BFS: 0
+
+========================================
+ Expected Output:
+========================================
+Sequential BFS Traversal: 0 1 2 3 4 5 6
+Sequential BFS Time: 0.XXX ms
+
+Parallel BFS Traversal: 0 1 2 3 4 5 6
+Parallel BFS Time: 0.XXX ms

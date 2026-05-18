@@ -1,0 +1,21 @@
+========================================
+ Commands for Experiment 08: Boston Housing Price Prediction
+========================================
+
+# Install dependencies:
+pip install tensorflow numpy pandas matplotlib scikit-learn
+
+# Run in Jupyter Notebook:
+jupyter notebook Boston_House_Price_Prediction.ipynb
+
+# Run in Google Colab:
+# 1. Upload Boston_House_Price_Prediction.ipynb and boston_housing.csv
+# 2. Run all cells
+
+========================================
+ Expected Output:
+========================================
+Test MSE:  ~10-15
+Test MAE:  ~2.0-3.0
+Test RMSE: ~3.0-4.0
+R² Score:  ~0.80-0.90
